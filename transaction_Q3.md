@@ -1,0 +1,69 @@
+# pour le changement de poste du pépinériste
+```sql
+
+
+START TRANSACTION;
+
+SELECT *  
+    FROM employees 
+    WHERE 
+	employees.emp_enter_date = (
+    	SELECT min(emp_enter_date)
+		FROM employees  
+        WHERE emp_sho_id = (
+            SELECT sho_id
+		    FROM shops 
+            where sho_city = 'Arras' 
+	        AND emp_pos_id = (
+                SELECT pos_id 
+                FROM posts 
+                WHERE pos_libelle = 'Pépiniériste')
+        )
+            )
+LIMIT 1;
+
+SET @idPépiniériste = (
+    SELECT emp_id 
+    FROM employees 
+    WHERE 
+    employees.emp_enter_date =
+    	(SELECT min(emp_enter_date)
+    	FROM employees  
+    	WHERE emp_sho_id =
+        (SELECT sho_id
+        FROM shops 
+        where sho_city = 'Arras' 
+    AND emp_pos_id = (
+        SELECT pos_id 
+        FROM posts 
+        WHERE pos_libelle ='Pépiniériste'))
+    )
+        LIMIT 1
+);
+
+SET @postePépinériste = (
+SELECT pos_id 
+FROM posts p
+WHERE p.pos_libelle like 'manager%');
+ 
+UPDATE employees 
+SET emp_pos_id = @postePépinériste,
+	emp_salary = emp_salary * 1.05
+WHERE emp_id = @idPépiniériste;
+
+SELECT *
+FROM employees
+WHERE emp_sho_id =(
+    SELECT sho_id 
+    FROM shops 
+    where sho_city = 'Arras' 
+    AND emp_pos_id IN (
+        SELECT pos_id 
+        FROM posts 
+        WHERE pos_libelle 
+        LIKE 'manager%'));
+COMMIT;
+
+
+
+```
