@@ -5,7 +5,7 @@
 -- procédure clients 
 DELIMITER |
 DROP PROCEDURE IF EXISTS clients |
-CREATE PROCEDURE clients (IN p_ord_id int)
+CREATE PROCEDURE facture (IN p_ord_id int)
 
 BEGIN
 -- clients
@@ -40,7 +40,7 @@ END |
 DELIMITER ;
 
 -- afficher les clients 
-call clients (20)
+call facture (20)
 -- exemple
 1
 Riviere
